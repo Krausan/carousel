@@ -1,29 +1,49 @@
 'use strict';
- 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
 
+var gulp      = require('gulp');
+var plumber   = require('gulp-plumber');
+var sass      = require('gulp-sass');
+var webserver = require('gulp-webserver');
+var opn       = require('opn');
 
+var sourcePaths = {
+  styles: ['src/scss/main.scss']
+};
 
-gulp.task('default', function() {
- gulp.watch('src/scss/main.scss', ['sass']);
+var distPaths = {
+  styles: './build/css/'
+};
 
-});
- 
+var server = {
+  host: 'localhost',
+  port: '1337'
+}
+
 gulp.task('sass', function () {
-  return gulp.src('src/scss/main.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./build/css/'));
+  gulp.src( sourcePaths.styles )
+    .pipe(plumber())
+    .pipe(sass())
+    .pipe(gulp.dest( distPaths.styles ));
 });
- 
-// gulp.task('webserver', function() {
-//   gulp.src('carousel')
-//     .pipe(webserver({
-//       livereload: true,
-//       directoryListing: true,
-//       open: true
-//     }));
-// });
 
-//  gulp.watch('index.html',['webserver']);
-// var webserver = require('gulp-webserver');
+gulp.task('webserver', function() {
+  gulp.src( '.' )
+    .pipe(webserver({
+      host:             server.host,
+      port:             server.port,
+      livereload:       true,
+      directoryListing: false
+    }));
+});
+
+gulp.task('openbrowser', function() {
+  opn( 'http://' + server.host + ':' + server.port );
+});
+
+gulp.task('watch', function(){
+  gulp.watch(sourcePaths.styles, ['sass']);
+});
+
+gulp.task('build', ['sass']);
+
+gulp.task('default', ['build', 'webserver', 'watch', 'openbrowser']);

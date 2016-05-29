@@ -1,11 +1,11 @@
 {
-  "name": "carousel 3",
+  "name": "carousel",
   "version": "0.0.1",
   "devDependencies": {
     "gulp": "*",
     "gulp-sass": "*",
-    "gulp-util": "*"
-
+    "gulp-util": "*",
+    "gulp-webserver": "^0.9.1",
+    "opn": "*"
   }
 }
-    // "gulp-webserver": "^0.9.1"
